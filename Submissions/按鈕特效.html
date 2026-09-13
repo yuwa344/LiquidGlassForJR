@@ -1,235 +1,164 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iOS 液態玻璃按鈕 - 俐落柔和版</title>
-  <style>
-    :root {
-      --glass-blur: blur(32px) saturate(190%);
-      --glass-border: rgba(255, 255, 255, 0.32);
-      --glass-glow: rgba(255, 255, 255, 0.7);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>按鈕特效 | 毛玻璃 + 漸變</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    font-family: "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+    background-size: 300% 300%;
+    animation: bgShift 18s ease infinite;
+    padding: 24px;
+    overflow-x: hidden;
+  }
+  @keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .blob-1 { width: 350px; height: 350px; background: #ff2e93; top: -100px; left: -80px; }
+  .blob-2 { width: 300px; height: 300px; background: #00c6ff; bottom: -80px; right: -60px; }
+  .blob-3 { width: 250px; height: 250px; background: #7c3aed; top: 50%; left: 70%; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+  .glass-panel {
+    position: relative;
+    z-index: 1;
+    width: min(600px, 100%);
+    padding: 48px 36px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+    text-align: center;
+  }
+  h1 {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(90deg, #fff, #ffd6f5, #a5e8ff, #c4b5fd, #fff);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine 5s linear infinite;
+  }
+  @keyframes shine { to { background-position: 300% center; } }
+  .subtitle {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 40px;
+    font-size: 15px;
+  }
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .btn {
+    position: relative;
+    padding: 14px 34px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    color: #fff;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    letter-spacing: 0.03em;
+  }
+  .btn-gradient {
+    background: linear-gradient(120deg, #ff2e93, #7c3aed, #00c6ff, #ff2e93);
+    background-size: 300% 300%;
+    animation: flow 6s ease infinite;
+    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+  }
+  @keyframes flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .btn-gradient:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 32px rgba(124,58,237,0.6);
+  }
+  .btn-glass {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .btn-glass:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(255,255,255,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid transparent;
+    background-image: linear-gradient(#1a1a2e, #1a1a2e), 
+                      linear-gradient(120deg, #ff2e93, #7c3aed, #00c6ff);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 0 20px rgba(124,58,237,0.3);
+  }
+  .btn-outline:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 0 30px rgba(0,198,255,0.5);
+  }
+  .btn-glow {
+    background: linear-gradient(135deg, #7c3aed, #00c6ff);
+    box-shadow: 0 0 18px rgba(0,198,255,0.4);
+  }
+  .btn-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 32px rgba(0,198,255,0.8), 0 0 64px rgba(124,58,237,0.6);
+  }
+  .btn:active { transform: translateY(-1px) scale(0.97); }
 
-    body {
-      min-height: 100vh;
-      background: #020408;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-panel { background: rgba(20,15,40,0.85); }
+    .btn-glass { background: rgba(255,255,255,0.15); }
+  }
 
-    
-    .ambient-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      background: radial-gradient(circle at 50% 35%, #131733 0%, #030408 100%);
-      pointer-events: none;
-    }
-
-    .liquid-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(95px);
-      opacity: 0.6;
-    }
-    .orb-1 { width: 480px; height: 480px; background: #00d2ff; top: 12%; left: 20%; }
-    .orb-2 { width: 450px; height: 450px; background: #ff007f; bottom: 18%; right: 20%; }
-
-    .stage {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
-    }
-
-    
-    .spring-glass-btn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 22px 58px;
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.11);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
-      border-radius: 50px;
-      cursor: pointer;
-      outline: none;
-      transform-origin: center center;
-      box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.35),
-        inset 0 1.5px 2px var(--glass-glow),
-        inset 0 -1.5px 2px rgba(0, 0, 0, 0.25);
-      will-change: transform, box-shadow, filter;
-    }
-
-    .spring-glass-btn svg {
-      width: 22px;
-      height: 22px;
-      fill: #ffffff;
-      pointer-events: none;
-    }
-
-    .spring-glass-btn span {
-      pointer-events: none;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .tip {
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 0.86rem;
-      letter-spacing: -0.2px;
-    }
-  </style>
+  @media (max-width: 480px) {
+    .glass-panel { padding: 32px 20px; }
+    .btn { padding: 12px 24px; font-size: 14px; width: 100%; }
+  }
+</style>
 </head>
 <body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
-  <div class="ambient-canvas">
-    <div class="liquid-orb orb-1"></div>
-    <div class="liquid-orb orb-2"></div>
-  </div>
-
-  <div class="stage">
-    <button class="spring-glass-btn" id="btn">
-      <svg viewBox="0 0 24 24">
-        <polygon points="6 3 20 12 6 21 6 3"></polygon>
-      </svg>
-      <span>開始體驗</span>
-    </button>
-    <div class="tip">即按即響應 · 柔潤微彈回正</div>
-  </div>
-
-  <script>
-    const btn = document.getElementById('btn');
-
-    
-    const spring = {
-      current: 1.0,
-      target: 1.0,
-      velocity: 0.0,
-      stiffness: 260, 
-      damping: 19,    
-      mass: 0.9       
-    };
-
-    let isPhysicallyPressed = false;
-    let pressStartTime = 0;
-    const MIN_HOLD_MS = 60; 
-    let releaseTimer = null;
-
-    let lastTime = performance.now();
-    let animId = null;
-
-    function tick(now) {
-      const dt = Math.min((now - lastTime) / 1000, 0.032);
-      lastTime = now;
-
-      
-      const displacement = spring.current - spring.target;
-      const springForce = -spring.stiffness * displacement;
-      const dampingForce = -spring.damping * spring.velocity;
-      const acceleration = (springForce + dampingForce) / spring.mass;
-
-      spring.velocity += acceleration * dt;
-      spring.current += spring.velocity * dt;
-
-      
-      const scaleBase = spring.current;
-      const microWobble = spring.velocity * 0.012; 
-      const scaleX = scaleBase + microWobble;
-      const scaleY = scaleBase - microWobble;
-
-      btn.style.transform = `scale(${scaleX}, ${scaleY})`;
-      
-      const progress = Math.max(0, (scaleBase - 1.0) / 0.10);
-      btn.style.filter = `brightness(${1 + progress * 0.14})`;
-      btn.style.boxShadow = `
-        0 ${20 + progress * 14}px ${40 + progress * 18}px rgba(0, 0, 0, ${0.35 + progress * 0.15}),
-        inset 0 ${1.5 + progress * 0.8}px 2px rgba(255, 255, 255, ${0.7 + progress * 0.2}),
-        inset 0 -1.5px 2px rgba(0, 0, 0, 0.25)
-      `;
-
-      
-      const isResting = Math.abs(spring.velocity) < 0.0006 && Math.abs(displacement) < 0.0006;
-      if (!isResting || isPhysicallyPressed || releaseTimer !== null) {
-        animId = requestAnimationFrame(tick);
-      } else {
-        spring.current = spring.target;
-        btn.style.transform = `scale(${spring.target})`;
-        btn.style.filter = 'brightness(1)';
-        animId = null;
-      }
-    }
-
-    function wakeSpring() {
-      lastTime = performance.now();
-      if (!animId) {
-        animId = requestAnimationFrame(tick);
-      }
-    }
-
-    function executeRelease() {
-      releaseTimer = null;
-      spring.target = 1.0;
-      wakeSpring();
-    }
-
-    function onPress(e) {
-      if (isPhysicallyPressed) return;
-      isPhysicallyPressed = true;
-      pressStartTime = performance.now();
-
-      if (releaseTimer) {
-        clearTimeout(releaseTimer);
-        releaseTimer = null;
-      }
-
-      try { btn.setPointerCapture(e.pointerId); } catch (_) {}
-      spring.target = 1.10; 
-      wakeSpring();
-    }
-
-    function onRelease(e) {
-      if (!isPhysicallyPressed) return;
-      isPhysicallyPressed = false;
-      try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
-
-      const elapsed = performance.now() - pressStartTime;
-      const remaining = MIN_HOLD_MS - elapsed;
-
-      if (remaining > 0) {
-        releaseTimer = setTimeout(executeRelease, remaining);
-      } else {
-        executeRelease();
-      }
-    }
-
-    btn.addEventListener('pointerdown', onPress);
-    btn.addEventListener('pointerup', onRelease);
-    btn.addEventListener('pointercancel', onRelease);
-  </script>
+  <main class="glass-panel">
+    <h1>按鈕特效展示</h1>
+    <p class="subtitle">毛玻璃背板 × 漸變流動 × 互動光暈</p>
+    <div class="btn-group">
+      <button class="btn btn-gradient">漸變流動</button>
+      <button class="btn btn-glass">毛玻璃</button>
+      <button class="btn btn-outline">邊框漸變</button>
+      <button class="btn btn-glow">光暈按鈕</button>
+    </div>
+  </main>
 </body>
 </html>
